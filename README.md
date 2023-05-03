@@ -20,6 +20,9 @@ Buffer 转字符串 buf.toString()
 
 # fs 模块写入文件
 这里err表示错误对象，如果有了错误就会存在
+注意这里是异步操作，即写文件同时主线程会继续执行之后的代码，而io线程负责文件写入。
+如果要同步操作，则使用 fs.writeFileSync("./a.txt", "aaa")，没有错误对象部分
+追加写入使用 appendFile 和 appendFileSync
 ```
 var fs = require("fs")
 fs.writeFile("./a.txt", "aaa", err => {
@@ -30,4 +33,48 @@ fs.writeFile("./a.txt", "aaa", err => {
         console.log("success")
     }
 })
+```
+
+# fs 模块流式写入
+适合写入较大文件
+```
+var fs = require("fs")
+var ws = fs.createWriteStream("./a.txt")
+ws.write("aaa\r\n")
+ws.write("bbb")
+ws.close()
+```
+
+# fs 异步读取
+同步读取类似同步写入
+```
+var fs = require("fs")
+fs.readFile("./a.txt", (err, data)=> {
+    if (err) {
+        console.log("error")
+        return
+    }
+    console.log(data.toString())
+})
+```
+
+# fs 流式读取
+可以绑定读取到内容后事件，读取完成后事件等
+```
+var fs = require("fs")
+var rs = fs.createReadStream("./a.txt")
+rs.on("data", chunk => {
+    console.log(chunk.toString())
+})
+rs.on("end", ()=>{
+    console.log("end")
+})
+```
+
+# 获取绝对路径
+```
+var fs = require("fs")
+var path = require("path")
+var p = path.resolve(__dirname, './index.html')
+console.log(p)
 ```
