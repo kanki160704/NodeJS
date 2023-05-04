@@ -78,3 +78,16 @@ var path = require("path")
 var p = path.resolve(__dirname, './index.html')
 console.log(p)
 ```
+
+# http 包
+以下内容可以生成一个监听本机9000端口的服务器，end函数可以定义请求体内容
+```
+var http = require("http")
+var server = http.createServer((request, response)=> {
+    response.end("aaa")
+})
+
+server.listen(9000, ()=> {
+    console.log("start")
+})
+```
